@@ -40,21 +40,69 @@
 
 // Your actual left and right lists contain many location IDs. What is the total distance between your lists?
 
-pub fn part1(input: &str) -> u32 {
+
+// --- Part Two ---
+
+// Your analysis only confirmed what everyone feared: the two lists of location IDs are indeed very different.
+
+// Or are they?
+
+// The Historians can't agree on which group made the mistakes or how to read most of the Chief's handwriting, but in the commotion you notice an interesting detail: a lot of location IDs appear in both lists! Maybe the other numbers aren't location IDs at all but rather misinterpreted handwriting.
+
+// This time, you'll need to figure out exactly how often each number from the left list appears in the right list. Calculate a total similarity score by adding up each number in the left list after multiplying it by the number of times that number appears in the right list.
+
+// Here are the same example lists again:
+
+// 3   4
+// 4   3
+// 2   5
+// 1   3
+// 3   9
+// 3   3
+
+// For these example lists, here is the process of finding the similarity score:
+
+//     The first number in the left list is 3. It appears in the right list three times, so the similarity score increases by 3 * 3 = 9.
+//     The second number in the left list is 4. It appears in the right list once, so the similarity score increases by 4 * 1 = 4.
+//     The third number in the left list is 2. It does not appear in the right list, so the similarity score does not increase (2 * 0 = 0).
+//     The fourth number, 1, also does not appear in the right list.
+//     The fifth number, 3, appears in the right list three times; the similarity score increases by 9.
+//     The last number, 3, appears in the right list three times; the similarity score again increases by 9.
+
+// So, for these example lists, the similarity score at the end of this process is 31 (9 + 4 + 0 + 0 + 9 + 9).
+
+// Once again consider your left and right lists. What is their similarity score?
+
+pub fn solve(input: &str) -> (u32, u32) {
     let length = input.lines().count();
+
     let mut list_1 = Vec::with_capacity(length);
     let mut list_2 = Vec::with_capacity(length);
 
+    let mut counters = std::collections::HashMap::new();
+
     for line in input.lines() {
         let v = line.split_whitespace().map(|x| x.parse::<u32>().unwrap()).collect::<Vec<u32>>();
+
+        // populate 2 lists
         list_1.push(v[0]);
         list_2.push(v[1]);
+
+        // save how many times each number appears in the right list
+        *counters.entry(v[1]).or_insert(0) += 1;
     }
 
+    // sort the lists
     list_1.sort_unstable();
     list_2.sort_unstable();
 
-    list_1.iter().zip(list_2.iter()).fold(0, |acc, (x, y)| acc + x.abs_diff(*y))
+    // calculate the distance between the lists
+    let p1 = list_1.iter().zip(list_2.iter()).map(|(l, r)| l.abs_diff(*r)).sum::<u32>();
+
+    // calculate the similarity score
+    let p2 = list_1.iter().fold(0, |acc, x| acc + x * counters.get(x).unwrap_or(&0));
+
+    (p1, p2)
 }
 
 #[cfg(test)]
@@ -70,6 +118,6 @@ mod tests {
 3   9
 3   3
 ";
-        assert_eq!(part1(input), 11);
+        assert_eq!(solve(input), (11, 31));
     }
 }
