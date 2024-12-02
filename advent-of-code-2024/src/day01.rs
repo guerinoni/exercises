@@ -79,7 +79,7 @@ pub fn solve(input: &str) -> (u32, u32) {
     let mut list_1 = Vec::with_capacity(length);
     let mut list_2 = Vec::with_capacity(length);
 
-    let mut counters = std::collections::HashMap::new();
+    let mut counters = std::collections::HashMap::with_capacity(length);
 
     for line in input.lines() {
         let v = line.split_whitespace().map(|x| x.parse::<u32>().unwrap()).collect::<Vec<u32>>();
