@@ -110,7 +110,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_part1() {
+    fn sample() {
         let input = r"3   4
 4   3
 2   5
@@ -119,5 +119,11 @@ mod tests {
 3   3
 ";
         assert_eq!(solve(input), (11, 31));
+    }
+
+    #[test]
+    fn real() {
+        let input = include_str!("./testdata/day01");
+        assert_eq!(solve(input), (1189304, 24349736));
     }
 }
