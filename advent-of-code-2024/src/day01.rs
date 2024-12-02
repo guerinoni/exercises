@@ -40,7 +40,6 @@
 
 // Your actual left and right lists contain many location IDs. What is the total distance between your lists?
 
-
 // --- Part Two ---
 
 // Your analysis only confirmed what everyone feared: the two lists of location IDs are indeed very different.
@@ -82,7 +81,10 @@ pub fn solve(input: &str) -> (u32, u32) {
     let mut counters = std::collections::HashMap::with_capacity(length);
 
     for line in input.lines() {
-        let v = line.split_whitespace().map(|x| x.parse::<u32>().unwrap()).collect::<Vec<u32>>();
+        let v = line
+            .split_whitespace()
+            .map(|x| x.parse::<u32>().unwrap())
+            .collect::<Vec<u32>>();
 
         // populate 2 lists
         list_1.push(v[0]);
@@ -97,10 +99,16 @@ pub fn solve(input: &str) -> (u32, u32) {
     list_2.sort_unstable();
 
     // calculate the distance between the lists
-    let p1 = list_1.iter().zip(list_2.iter()).map(|(l, r)| l.abs_diff(*r)).sum::<u32>();
+    let p1 = list_1
+        .iter()
+        .zip(list_2.iter())
+        .map(|(l, r)| l.abs_diff(*r))
+        .sum::<u32>();
 
     // calculate the similarity score
-    let p2 = list_1.iter().fold(0, |acc, x| acc + x * counters.get(x).unwrap_or(&0));
+    let p2 = list_1
+        .iter()
+        .fold(0, |acc, x| acc + x * counters.get(x).unwrap_or(&0));
 
     (p1, p2)
 }
