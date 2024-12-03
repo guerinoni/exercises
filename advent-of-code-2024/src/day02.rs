@@ -35,45 +35,82 @@
 
 // Analyze the unusual data from the engineers. How many reports are safe?
 
-pub fn solve(input: &str) -> (u32, u32) {
-    let mut safe = 0;
+// --- Part Two ---
+
+// The engineers are surprised by the low number of safe reports until they realize they forgot to tell you about the Problem Dampener.
+
+// The Problem Dampener is a reactor-mounted module that lets the reactor safety systems tolerate a single bad level in what would otherwise be a safe report. It's like the bad level never happened!
+
+// Now, the same rules apply as before, except if removing a single level from an unsafe report would make it safe, the report instead counts as safe.
+
+// More of the above example's reports are now safe:
+
+//     7 6 4 2 1: Safe without removing any level.
+//     1 2 7 8 9: Unsafe regardless of which level is removed.
+//     9 7 6 2 1: Unsafe regardless of which level is removed.
+//     1 3 2 4 5: Safe by removing the second level, 3.
+//     8 6 4 4 1: Safe by removing the third level, 4.
+//     1 3 6 7 9: Safe without removing any level.
+
+// Thanks to the Problem Dampener, 4 reports are actually safe!
+
+// Update your analysis by handling situations where the Problem Dampener can remove a single level from unsafe reports. How many reports are now safe?
+
+fn is_safe(v: &[u32]) -> bool {
+    if v[0] == v[1] {
+        return false;
+    }
+
+    let is_increasing = v[0] < v[1];
+
+    for n in v.windows(2) {
+        if is_increasing && n[0] > n[1] {
+            return false;
+        } else if !is_increasing && n[0] < n[1] {
+            return false;
+        }
+
+        let diff = n[1].abs_diff(n[0]);
+
+        if diff > 3 || diff == 0 {
+            return false;
+        }
+    }
+
+    true
+}
+
+pub fn solve(input: &str) -> (i32, i32) {
+    let mut p1 = 0;
+    let mut p2 = 0;
+
     for line in input.lines() {
         let nums = line
             .split_whitespace()
             .map(|x| x.parse::<u32>().unwrap())
             .collect::<Vec<u32>>();
-        println!("{:?}", nums);
 
-        let mut is_increasing = Option::None;
+        if is_safe(&nums) {
+            p1 += 1;
 
-        if nums.windows(2).all(|w| {
-            let diff = w[1] as i32 - w[0] as i32;
-            println!("{} {} {}", w[0], w[1], diff);
+            // skip the check of dampener, is already safe
+            continue;
+        }
 
-            if diff.abs() > 3 || diff == 0 {
-                println!("not safe >3 or 0");
-                return false;
+        for i in 0..nums.len() {
+            let mut nn = nums.clone();
+            nn.remove(i);
+
+            if is_safe(&nn) {
+                p2 += 1;
+
+                // if we find a safe report, we can break the loop
+                break;
             }
-
-            let inc = diff > 0;
-
-            if is_increasing.is_none() {
-                is_increasing = Some(inc);
-            } else {
-                if is_increasing.unwrap() != inc {
-                    println!("not safe inc {} {}", is_increasing.unwrap(), inc);
-                    return false;
-                }
-            }
-
-            true
-        }) {
-            println!("safe");
-            safe += 1;
         }
     }
 
-    (safe, 0)
+    (p1, p2+p1) // concatenate the safe reports from part 1
 }
 
 #[cfg(test)]
@@ -81,14 +118,26 @@ mod tests {
     use super::*;
 
     #[test]
+    fn safety() {
+        assert_eq!(is_safe(&[7, 6, 4, 2, 1]), true);
+        assert_eq!(is_safe(&[1, 2, 7, 8, 9]), false);
+        assert_eq!(is_safe(&[9, 7, 6, 2, 1]), false);
+        assert_eq!(is_safe(&[1, 3, 2, 4, 5]), false);
+        assert_eq!(is_safe(&[8, 6, 4, 4, 1]), false);
+        assert_eq!(is_safe(&[1, 3, 6, 7, 9]), true);
+        assert_eq!(is_safe(&[1, 2, 4, 5]), true);
+        assert_eq!(is_safe(&[8, 6, 4, 1]), true);
+        assert_eq!(is_safe(&[3,2,4,5]), false);
+    }
+
+    #[test]
     fn sample() {
         let input = r"7 6 4 2 1
-1 2 7 8 9
-9 7 6 2 1
-1 3 2 4 5
-8 6 4 4 1
-1 3 6 7 9
-";
-        assert_eq!(solve(input), (2,0));
+    1 2 7 8 9
+    9 7 6 2 1
+    1 3 2 4 5
+    8 6 4 4 1
+    1 3 6 7 9";
+        assert_eq!(solve(input), (2, 4));
     }
 }
