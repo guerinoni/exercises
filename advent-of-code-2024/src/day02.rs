@@ -64,9 +64,7 @@ fn is_safe(v: &[u32]) -> bool {
     let is_increasing = v[0] < v[1];
 
     for n in v.windows(2) {
-        if is_increasing && n[0] > n[1] {
-            return false;
-        } else if !is_increasing && n[0] < n[1] {
+        if (is_increasing && n[0] > n[1]) || (!is_increasing && n[0] < n[1]) {
             return false;
         }
 
@@ -80,6 +78,7 @@ fn is_safe(v: &[u32]) -> bool {
     true
 }
 
+#[must_use]
 pub fn solve(input: &str) -> (i32, i32) {
     let mut p1 = 0;
     let mut p2 = 0;
@@ -87,7 +86,8 @@ pub fn solve(input: &str) -> (i32, i32) {
     for line in input.lines() {
         let nums = line
             .split_whitespace()
-            .map(|x| x.parse::<u32>().unwrap())
+            .map(str::parse)
+            .filter_map(Result::ok)
             .collect::<Vec<u32>>();
 
         if is_safe(&nums) {
@@ -110,7 +110,7 @@ pub fn solve(input: &str) -> (i32, i32) {
         }
     }
 
-    (p1, p2+p1) // concatenate the safe reports from part 1
+    (p1, p2 + p1) // concatenate the safe reports from part 1
 }
 
 #[cfg(test)]
@@ -127,7 +127,7 @@ mod tests {
         assert_eq!(is_safe(&[1, 3, 6, 7, 9]), true);
         assert_eq!(is_safe(&[1, 2, 4, 5]), true);
         assert_eq!(is_safe(&[8, 6, 4, 1]), true);
-        assert_eq!(is_safe(&[3,2,4,5]), false);
+        assert_eq!(is_safe(&[3, 2, 4, 5]), false);
     }
 
     #[test]
@@ -139,5 +139,11 @@ mod tests {
     8 6 4 4 1
     1 3 6 7 9";
         assert_eq!(solve(input), (2, 4));
+    }
+
+    #[test]
+    fn real() {
+        let input = include_str!("./testdata/day02");
+        assert_eq!(solve(input), (287, 354));
     }
 }

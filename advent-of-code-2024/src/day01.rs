@@ -1,4 +1,4 @@
-/// --- Day 1: Historian Hysteria ---
+// --- Day 1: Historian Hysteria ---
 
 // The Chief Historian is always present for the big Christmas sleigh launch, but nobody has seen him in months! Last anyone heard, he was visiting locations that are historically significant to the North Pole; a group of Senior Historians has asked you to accompany them as they check the places they think he was most likely to visit.
 
@@ -72,6 +72,7 @@
 
 // Once again consider your left and right lists. What is their similarity score?
 
+#[must_use]
 pub fn solve(input: &str) -> (u32, u32) {
     let length = input.lines().count();
 
@@ -83,7 +84,8 @@ pub fn solve(input: &str) -> (u32, u32) {
     for line in input.lines() {
         let v = line
             .split_whitespace()
-            .map(|x| x.parse::<u32>().unwrap())
+            .map(str::parse)
+            .filter_map(Result::ok)
             .collect::<Vec<u32>>();
 
         // populate 2 lists

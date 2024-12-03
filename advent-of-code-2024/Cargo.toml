@@ -8,6 +8,16 @@ edition = "2021"
 [dev-dependencies]
 criterion = "0.5"
 
+[lints.clippy]
+complexity = "warn"
+correctness = "warn"
+nursery = "warn"
+pedantic = "warn"
+perf = "warn"
+style = "warn"
+suspicious = "warn"
+
+
 [[bench]]
 name = "day01"
 harness = false
