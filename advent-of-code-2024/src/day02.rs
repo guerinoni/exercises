@@ -56,26 +56,18 @@
 
 // Update your analysis by handling situations where the Problem Dampener can remove a single level from unsafe reports. How many reports are now safe?
 
-fn is_safe(v: &[u32]) -> bool {
-    if v[0] == v[1] {
-        return false;
-    }
+fn is_safe<'a>(v: impl Iterator<Item = u32> + Clone) -> bool {
+    let mut iter = v.clone(); // clone only 2 elements
+    let first = iter.next().unwrap();
+    let second = iter.next().unwrap();
 
-    let is_increasing = v[0] < v[1];
+    let is_increasing = first < second;
 
-    for n in v.windows(2) {
-        if (is_increasing && n[0] > n[1]) || (!is_increasing && n[0] < n[1]) {
-            return false;
-        }
+    v.clone().zip(v.skip(1)).all(|(a, b)| {
+        let diff = b.abs_diff(a);
 
-        let diff = n[1].abs_diff(n[0]);
-
-        if diff > 3 || diff == 0 {
-            return false;
-        }
-    }
-
-    true
+        ((is_increasing && a <= b) || (!is_increasing && a >= b)) && diff > 0 && diff <= 3
+    })
 }
 
 #[must_use]
@@ -90,7 +82,7 @@ pub fn solve(input: &str) -> (i32, i32) {
             .filter_map(Result::ok)
             .collect::<Vec<u32>>();
 
-        if is_safe(&nums) {
+        if is_safe(nums.iter().copied()) { // zero cost copy those types
             p1 += 1;
 
             // skip the check of dampener, is already safe
@@ -98,10 +90,10 @@ pub fn solve(input: &str) -> (i32, i32) {
         }
 
         for i in 0..nums.len() {
-            let mut nn = nums.clone();
-            nn.remove(i);
+            let part1 = &nums[..i];
+            let part2 = &nums[i + 1..];
 
-            if is_safe(&nn) {
+            if is_safe(part1.iter().chain(part2.iter()).copied()) {
                 p2 += 1;
 
                 // if we find a safe report, we can break the loop
@@ -119,15 +111,12 @@ mod tests {
 
     #[test]
     fn safety() {
-        assert_eq!(is_safe(&[7, 6, 4, 2, 1]), true);
-        assert_eq!(is_safe(&[1, 2, 7, 8, 9]), false);
-        assert_eq!(is_safe(&[9, 7, 6, 2, 1]), false);
-        assert_eq!(is_safe(&[1, 3, 2, 4, 5]), false);
-        assert_eq!(is_safe(&[8, 6, 4, 4, 1]), false);
-        assert_eq!(is_safe(&[1, 3, 6, 7, 9]), true);
-        assert_eq!(is_safe(&[1, 2, 4, 5]), true);
-        assert_eq!(is_safe(&[8, 6, 4, 1]), true);
-        assert_eq!(is_safe(&[3, 2, 4, 5]), false);
+        assert_eq!(is_safe([7, 6, 4, 2, 1].iter().copied()), true);
+        assert_eq!(is_safe([1, 2, 7, 8, 9].iter().copied()), false);
+        assert_eq!(is_safe([9, 7, 6, 2, 1].iter().copied()), false);
+        assert_eq!(is_safe([1, 3, 2, 4, 5].iter().copied()), false);
+        assert_eq!(is_safe([8, 6, 4, 4, 1].iter().copied()), false);
+        assert_eq!(is_safe([1, 3, 6, 7, 9].iter().copied()), true);
     }
 
     #[test]
