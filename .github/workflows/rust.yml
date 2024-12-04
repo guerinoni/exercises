@@ -1,0 +1,22 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  rust:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: Build
+      run: |
+        cd advent-of-code-2024
+        cargo build --verbose
+    - name: Run tests
+      run: |
+        cd advent-of-code-2024
+        cargo test --verbose
