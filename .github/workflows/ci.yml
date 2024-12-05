@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  rust:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: Run tests
+      run: |
+        cd advent-of-code-2024
+        cargo test --verbose
+  
+  devbox:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: Install devbox
+      uses: jetify-com/devbox-install-action@v0.11.0
+      with:
+        project-path: 'advent-of-code-2024'
+        enable-cache: 'true'
+    - name: Test
+      run: |
+        cd advent-of-code-2024
+        devbox run test
