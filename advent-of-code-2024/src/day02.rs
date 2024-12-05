@@ -56,10 +56,14 @@
 
 // Update your analysis by handling situations where the Problem Dampener can remove a single level from unsafe reports. How many reports are now safe?
 
-fn is_safe<'a>(v: impl Iterator<Item = u32> + Clone) -> (bool, usize) {
+fn is_safe(v: impl Iterator<Item = u32> + Clone) -> (bool, usize) {
     // take first 5 elements to decide if the list is increasing or decreasing
     let iter = v.clone().take(5);
-    let count_inc = iter.clone().zip(iter.clone().skip(1)).filter(|(a, b)| a < b).count();
+    let count_inc = iter
+        .clone()
+        .zip(iter.skip(1))
+        .filter(|(a, b)| a < b)
+        .count();
     let is_increasing = count_inc > 2;
 
     let mut idx = 0;
@@ -122,7 +126,10 @@ mod tests {
         assert_eq!(is_safe([9, 7, 6, 2, 1].iter().copied()), (false, 2));
         assert_eq!(is_safe([1, 3, 2, 4, 5].iter().copied()), (false, 1));
         assert_eq!(is_safe([8, 6, 4, 4, 1].iter().copied()), (false, 2));
-        assert_eq!(is_safe([27, 24, 26, 29, 30, 33, 36].iter().copied()), (false, 0));
+        assert_eq!(
+            is_safe([27, 24, 26, 29, 30, 33, 36].iter().copied()),
+            (false, 0)
+        );
     }
 
     #[test]
