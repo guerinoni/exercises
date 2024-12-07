@@ -1,6 +1,7 @@
 mod day01;
 mod day02;
 mod day03;
+mod day04;
 mod memory;
 
 fn main() {
@@ -30,4 +31,11 @@ fn main() {
     println!("  Part 2: {p2}");
 
     memory::print("after day03");
+
+    let (p1, p2) = day04::solve(include_str!("./testdata/day04"));
+    println!("Day 04");
+    println!("  Part 1: {p1}");
+    println!("  Part 2: {p2}");
+
+    memory::print("after day04");
 }
