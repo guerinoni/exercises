@@ -104,6 +104,7 @@ fn try_up(matrix: &[Vec<char>], x: usize, y: usize) -> bool {
 
     matrix[y - 1][x] == 'M' && matrix[y - 2][x] == 'A' && matrix[y - 3][x] == 'S'
 }
+
 #[allow(clippy::cast_possible_wrap)]
 fn try_right_down(matrix: &[Vec<char>], x: usize, y: usize) -> bool {
     if x + 3 >= matrix[y].len() || y + 3 >= matrix.len() {
@@ -152,6 +153,7 @@ fn find_xmas(matrix: &[Vec<char>], x: usize, y: usize) -> u32 {
     right + left + down + up + rd + ld + ru + lu
 }
 
+#[allow(clippy::cast_possible_wrap)]
 #[must_use]
 pub fn solve(input: &str) -> (u32, u32) {
     let matrix = input
@@ -159,7 +161,7 @@ pub fn solve(input: &str) -> (u32, u32) {
         .map(|line| line.chars().collect::<Vec<_>>())
         .collect::<Vec<_>>();
 
-    let mut p1 = 0;
+    let (mut p1, mut p2) = (0, 0);
     let (mut x, mut y) = (0, 0);
 
     let horizontal_len = matrix[0].len();
@@ -183,10 +185,36 @@ pub fn solve(input: &str) -> (u32, u32) {
             p1 += find_xmas(&matrix, x, y);
         }
 
+        // take the center of X-MAS
+        // A cannot be on the edges
+        if ch == 'A' && x > 0 && y > 0 && x < horizontal_len - 1 && y < vertical_len - 1 {
+            let top_left = matrix[y - 1][x - 1];
+            let top_right = matrix[y - 1][x + 1];
+            let bottom_left = matrix[y + 1][x - 1];
+            let bottom_right = matrix[y + 1][x + 1];
+
+            if (top_left == 'M' && top_right == 'M' && bottom_left == 'S' && bottom_right == 'S')
+                || (top_left == 'S'
+                    && top_right == 'S'
+                    && bottom_left == 'M'
+                    && bottom_right == 'M')
+                || (top_left == 'M'
+                    && top_right == 'S'
+                    && bottom_left == 'M'
+                    && bottom_right == 'S')
+                || (top_left == 'S'
+                    && top_right == 'M'
+                    && bottom_left == 'S'
+                    && bottom_right == 'M')
+            {
+                p2 += 1;
+            }
+        }
+
         x += 1;
     }
 
-    (p1, 0)
+    (p1, p2)
 }
 
 #[cfg(test)]
@@ -206,6 +234,12 @@ SAXAMASAAA
 MAMMMXMMMM
 MXMXAXMASX"#;
 
-        assert_eq!(solve(input), (18, 0));
+        assert_eq!(solve(input), (18, 9));
+    }
+
+    #[test]
+    fn real() {
+        let input = include_str!("./testdata/day04");
+        assert_eq!(solve(input), (2639, 2005));
     }
 }

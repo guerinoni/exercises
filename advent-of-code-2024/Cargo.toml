@@ -21,13 +21,5 @@ suspicious = "warn"
 
 
 [[bench]]
-name = "day01"
-harness = false
-
-[[bench]]
-name = "day02"
-harness = false
-
-[[bench]]
-name = "day03"
+name = "days"
 harness = false
