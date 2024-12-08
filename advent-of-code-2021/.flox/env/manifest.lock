@@ -1,0 +1,147 @@
+{
+  "lockfile-version": 1,
+  "manifest": {
+    "version": 1,
+    "install": {
+      "zig": {
+        "pkg-path": "zig"
+      }
+    },
+    "hook": {},
+    "profile": {},
+    "options": {
+      "systems": [
+        "aarch64-darwin",
+        "aarch64-linux",
+        "x86_64-darwin",
+        "x86_64-linux"
+      ],
+      "allow": {
+        "licenses": []
+      },
+      "semver": {}
+    }
+  },
+  "packages": [
+    {
+      "attr_path": "zig",
+      "broken": false,
+      "derivation": "/nix/store/2csmavkdxgnv7a7q1y3kspbfiink5xqz-zig-0.13.0.drv",
+      "description": "General-purpose programming language and toolchain for maintaining robust, optimal, and reusable software",
+      "install_id": "zig",
+      "license": "MIT",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=d0797a04b81caeae77bcff10a9dde78bc17f5661",
+      "name": "zig-0.13.0",
+      "pname": "zig",
+      "rev": "d0797a04b81caeae77bcff10a9dde78bc17f5661",
+      "rev_count": 717074,
+      "rev_date": "2024-12-05T09:53:19Z",
+      "scrape_date": "2024-12-07T04:05:05Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "0.13.0",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "doc": "/nix/store/9hqppgljkmxndqhhw8k3cpsblp15jgzd-zig-0.13.0-doc",
+        "out": "/nix/store/3nnpav1mqgmm3k4ab297hl6g54l1lzms-zig-0.13.0"
+      },
+      "system": "aarch64-darwin",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "zig",
+      "broken": false,
+      "derivation": "/nix/store/fcbw3b54j0ij529x8akm62jkq5yq3554-zig-0.13.0.drv",
+      "description": "General-purpose programming language and toolchain for maintaining robust, optimal, and reusable software",
+      "install_id": "zig",
+      "license": "MIT",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=d0797a04b81caeae77bcff10a9dde78bc17f5661",
+      "name": "zig-0.13.0",
+      "pname": "zig",
+      "rev": "d0797a04b81caeae77bcff10a9dde78bc17f5661",
+      "rev_count": 717074,
+      "rev_date": "2024-12-05T09:53:19Z",
+      "scrape_date": "2024-12-07T04:05:05Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "0.13.0",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "doc": "/nix/store/f2g59h318dnrbyvj19aw2n1l9cbbcpk5-zig-0.13.0-doc",
+        "out": "/nix/store/kypsmghp2jlr8fjb37i6km8fc9jv5cnj-zig-0.13.0"
+      },
+      "system": "aarch64-linux",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "zig",
+      "broken": false,
+      "derivation": "/nix/store/dxj4zi1y4ilg5gcix82zqq6qg9mx524c-zig-0.13.0.drv",
+      "description": "General-purpose programming language and toolchain for maintaining robust, optimal, and reusable software",
+      "install_id": "zig",
+      "license": "MIT",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=d0797a04b81caeae77bcff10a9dde78bc17f5661",
+      "name": "zig-0.13.0",
+      "pname": "zig",
+      "rev": "d0797a04b81caeae77bcff10a9dde78bc17f5661",
+      "rev_count": 717074,
+      "rev_date": "2024-12-05T09:53:19Z",
+      "scrape_date": "2024-12-07T04:05:05Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "0.13.0",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "doc": "/nix/store/ism8x8hp74nqzzdl5022hpx7h9pdkcna-zig-0.13.0-doc",
+        "out": "/nix/store/95w005yswa7h4im5ya0inmqpp9lvavbf-zig-0.13.0"
+      },
+      "system": "x86_64-darwin",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "zig",
+      "broken": false,
+      "derivation": "/nix/store/iap46ka9wqpyqi5pfjl0qlmb22gprbfg-zig-0.13.0.drv",
+      "description": "General-purpose programming language and toolchain for maintaining robust, optimal, and reusable software",
+      "install_id": "zig",
+      "license": "MIT",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=d0797a04b81caeae77bcff10a9dde78bc17f5661",
+      "name": "zig-0.13.0",
+      "pname": "zig",
+      "rev": "d0797a04b81caeae77bcff10a9dde78bc17f5661",
+      "rev_count": 717074,
+      "rev_date": "2024-12-05T09:53:19Z",
+      "scrape_date": "2024-12-07T04:05:05Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "0.13.0",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "doc": "/nix/store/nd8hfilcvrkgip8xhz3149n2gb8nmsxq-zig-0.13.0-doc",
+        "out": "/nix/store/v9xybfsc2iyfd602s192pymyrrncni0n-zig-0.13.0"
+      },
+      "system": "x86_64-linux",
+      "group": "toplevel",
+      "priority": 5
+    }
+  ]
+}
