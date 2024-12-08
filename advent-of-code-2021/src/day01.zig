@@ -44,6 +44,42 @@
 
 // How many measurements are larger than the previous measurement?
 
+// --- Part Two ---
+
+// Considering every single measurement isn't as useful as you expected: there's just too much noise in the data.
+
+// Instead, consider sums of a three-measurement sliding window. Again considering the above example:
+
+// 199  A
+// 200  A B
+// 208  A B C
+// 210    B C D
+// 200  E   C D
+// 207  E F   D
+// 240  E F G
+// 269    F G H
+// 260      G H
+// 263        H
+
+// Start by comparing the first and second three-measurement windows. The measurements in the first window are marked A (199, 200, 208); their sum is 199 + 200 + 208 = 607. The second window is marked B (200, 208, 210); its sum is 618. The sum of measurements in the second window is larger than the sum of the first, so this first comparison increased.
+
+// Your goal now is to count the number of times the sum of measurements in this sliding window increases from the previous sum. So, compare A with B, then compare B with C, then C with D, and so on. Stop when there aren't enough measurements left to create a new three-measurement sum.
+
+// In the above example, the sum of each three-measurement window is as follows:
+
+// A: 607 (N/A - no previous sum)
+// B: 618 (increased)
+// C: 618 (no change)
+// D: 617 (decreased)
+// E: 647 (increased)
+// F: 716 (increased)
+// G: 769 (increased)
+// H: 792 (increased)
+
+// In this example, there are 5 sums that are larger than the previous sum.
+
+// Consider sums of a three-measurement sliding window. How many sums are larger than the previous sum?
+
 const std = @import("std");
 
 const Result = struct {
@@ -52,28 +88,45 @@ const Result = struct {
 };
 
 pub fn solve(input: []const u8) !Result {
-    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
-    defer _ = gpa.deinit();
-    const allocator = gpa.allocator();
-
     var lines = std.mem.tokenize(u8, input, "\n");
-    var nums = std.ArrayList(u32).init(allocator);
-    defer nums.deinit();
 
     var part1: u32 = 0;
     var part2: u32 = 0;
 
-    var prev: u32 = (1 << 32) - 1; // put ths at max value to make sure the first number is always larger
+    var prev: u32 = (1 << 32) - 1;
+    var prev1: u32 = (1 << 32) - 1;
+    var prev2: u32 = (1 << 32) - 1;
+    var prev3: u32 = (1 << 32) - 1;
+
+    var last_sum: u32 = (1 << 32) - 1;
 
     while (lines.next()) |line| {
-        part2 += 2;
         const num = try std.fmt.parseInt(u32, line, 10);
         if (num > prev) {
             part1 += 1;
         }
 
         prev = num;
-        try nums.append(num);
+
+        if ((prev1 != (1 << 32) - 1) and (prev2 != (1 << 32) - 1) and (prev3 != (1 << 32) - 1)) {
+            const sum = prev1 + prev2 + prev3;
+            if (sum > last_sum) {
+                part2 += 1;
+            }
+
+            last_sum = sum;
+        }
+
+        prev3 = prev2;
+        prev2 = prev1;
+        prev1 = num;
+    }
+
+    // we need to do the last calculation for part2 because the last iteration of the loop
+    // we do the previous check and update the triplets with latest value read.
+    const sum = prev1 + prev2 + prev3;
+    if (sum > last_sum) {
+        part2 += 1;
     }
 
     return Result{ .part1 = part1, .part2 = part2 };
@@ -81,10 +134,16 @@ pub fn solve(input: []const u8) !Result {
 
 const expect = @import("std").testing.expect;
 
-test "part 1 sample" {
+test "sample" {
     const input = "199\n200\n208\n210\n200\n207\n240\n269\n260\n263\n";
-    const expected = 7;
-
     const result = try solve(input);
-    try expect(result.part1 == expected);
+    try expect(result.part1 == 7);
+    try expect(result.part2 == 5);
+}
+
+test "real" {
+    const input = @embedFile("./testdata/day01");
+    const result = try solve(input);
+    try expect(result.part1 == 1527);
+    try expect(result.part2 == 1575);
 }
