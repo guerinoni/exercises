@@ -158,7 +158,7 @@ mod tests {
 
     #[test]
     fn sample() {
-        let input = r#"MMMSXXMASM
+        let input = r"MMMSXXMASM
 MSAMXMSMSA
 AMXSXMAAMM
 MSAMASMSMX
@@ -167,7 +167,7 @@ XXAMMXXAMA
 SMSMSASXSS
 SAXAMASAAA
 MAMMMXMMMM
-MXMXAXMASX"#;
+MXMXAXMASX";
 
         assert_eq!(solve(input), (18, 9));
     }
