@@ -23,6 +23,7 @@ pub fn solve(input: &str) -> (u32, u32) {
     }
 
     let mut sum_of_middle_values = 0;
+    let mut sum_of_middle_fixed_values = 0;
 
     for line in &mut it {
         let v = line.split(',').collect::<Vec<_>>();
@@ -34,15 +35,10 @@ pub fn solve(input: &str) -> (u32, u32) {
         let mut ok = true;
 
         for (idx, value) in v.iter().enumerate() {
-            let r = rules.get(value);
-
-            // no rule for this number, so it's ok
-            if r.is_none() {
-                continue;
-            }
-
-            // let r = r.unwrap();
-            // println!("{value} {r:?}, {set:?}");
+            let r = match rules.get(value) {
+                Some(r) => Some(r),
+                None => continue, // no rule for this number, so it's ok
+            };
 
             for rr in r.unwrap() {
                 // if the number if the rule is already before in the list, it's not ok
@@ -51,19 +47,63 @@ pub fn solve(input: &str) -> (u32, u32) {
                     break;
                 }
             }
-
-            // if it's not ok, we can break the loop without checking the rest of the list
-            if !ok {
-                break;
-            }
         }
 
         if ok {
             sum_of_middle_values += v[v.len() / 2];
+        } else {
+            let order = other_way(&rules, &v);
+            sum_of_middle_fixed_values += order[order.len() / 2];
         }
     }
 
-    (sum_of_middle_values, 0)
+    (sum_of_middle_values, sum_of_middle_fixed_values)
+}
+
+fn other_way(rules: &std::collections::BTreeMap<u32, Vec<u32>>, current: &[u32]) -> Vec<u32> {
+    let mut ordered = Vec::with_capacity(current.len());
+    let mut present_set = std::collections::HashSet::new();
+
+    // optimization: start with last element already in the list, we can save 1 iteration
+    let last = *current.last().unwrap();
+    ordered.push(last);
+    present_set.insert(last);
+
+    for x in current.iter().rev().skip(1) {
+        if !ordered.contains(x) {
+            ordered.push(*x);
+            present_set.insert(*x);
+        }
+
+        let Some(x_rules) = rules.get(x) else {
+            continue;
+        };
+
+        for y in current {
+            if x == y {
+                continue;
+            }
+
+            if x_rules.contains(y) {
+                if present_set.contains(y) { // optimization: use a set to avoid searching in the list, O(1) instead of O(n)
+                    let y_pos = ordered.iter().position(|&a| a == *y).unwrap();
+                    let x_pos = ordered.iter().position(|&a| a == *x).unwrap();
+                    if x_pos < y_pos { // x is already before y, no need to move it
+                        continue;
+                    }
+                    ordered.remove(x_pos);
+                    ordered.insert(y_pos, *x);
+
+                    present_set.insert(*x);
+                } else {
+                    ordered.push(*y);
+                    present_set.insert(*y);
+                }
+            }
+        }
+    }
+
+    ordered
 }
 
 #[cfg(test)]
@@ -72,7 +112,7 @@ mod tests {
 
     #[test]
     fn sample() {
-        let input = r#"47|53
+        let input = r"47|53
 97|13
 97|61
 97|47
@@ -99,8 +139,8 @@ mod tests {
 75,29,13
 75,97,47,61,53
 61,13,29
-97,13,75,29,47"#;
+97,13,75,29,47";
 
-        assert_eq!(solve(input), (143, 0));
+        assert_eq!(solve(input), (143, 123));
     }
 }
