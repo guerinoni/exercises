@@ -2,7 +2,7 @@
 
 use std::vec;
 
-pub fn solve(input: &str) -> (u32, u32) {
+#[must_use] pub fn solve(input: &str) -> (u32, u32) {
     let mut rules = std::collections::BTreeMap::new();
 
     let mut it = input.lines(); // this allow to consume iterator in 2 phases
@@ -70,7 +70,7 @@ fn other_way(rules: &std::collections::BTreeMap<u32, Vec<u32>>, current: &[u32])
     present_set.insert(last);
 
     for x in current.iter().rev().skip(1) {
-        if !ordered.contains(x) {
+        if !present_set.contains(x) {
             ordered.push(*x);
             present_set.insert(*x);
         }
@@ -80,26 +80,30 @@ fn other_way(rules: &std::collections::BTreeMap<u32, Vec<u32>>, current: &[u32])
         };
 
         for y in current {
-            if x == y {
+            if x == y || !x_rules.contains(y) {
                 continue;
             }
 
-            if x_rules.contains(y) {
-                if present_set.contains(y) { // optimization: use a set to avoid searching in the list, O(1) instead of O(n)
-                    let y_pos = ordered.iter().position(|&a| a == *y).unwrap();
-                    let x_pos = ordered.iter().position(|&a| a == *x).unwrap();
-                    if x_pos < y_pos { // x is already before y, no need to move it
-                        continue;
-                    }
-                    ordered.remove(x_pos);
-                    ordered.insert(y_pos, *x);
-
-                    present_set.insert(*x);
-                } else {
-                    ordered.push(*y);
-                    present_set.insert(*y);
+            let value = if present_set.contains(y) {
+                // optimization: use a set to avoid searching in the list, O(1) instead of O(n)
+                let y_pos = ordered.iter().position(|&a| a == *y).unwrap();
+                let x_pos = ordered.iter().position(|&a| a == *x).unwrap();
+                if x_pos < y_pos {
+                    // x is already before y, no need to move it
+                    continue;
                 }
-            }
+
+                ordered.remove(x_pos);
+                ordered.insert(y_pos, *x);
+
+                *x
+            } else {
+                ordered.push(*y);
+
+                *y
+            };
+
+            present_set.insert(value);
         }
     }
 
